@@ -1,5 +1,8 @@
-import requests
+"""每日考研倒计时和励志语录企业微信推送脚本。"""
+
 import datetime
+
+import requests
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 # ====== 你的配置 ======
