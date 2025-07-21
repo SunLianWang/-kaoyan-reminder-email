@@ -15,6 +15,7 @@
 
 1.  一台安装了 `Python 3` 的 Linux 服务器。
 2.  一个邮箱账号（例如 QQ 邮箱），并已开启 `SMTP` 服务、获取了**授权码**（注意不是邮箱密码）。
+    - *您可以点击 [此链接](https://wx.mail.qq.com/account/index?sid=zQVLOYxDT2ouuGkzAHRVWgAA#/?tab=safety&r=1753091939003) 前往 QQ 邮箱官网生成授权码。*
 
 ### 部署步骤
 
@@ -156,43 +157,11 @@ telnet smtp.qq.com 465
 
 #### 3. 手动执行邮件发送脚本
 
-你也可以使用下面的独立脚本来排查是否是 `SMTP` 登录或邮件发送本身的问题。
+如果以上步骤无法定位问题，可以运行项目中的 `test_email.py` 脚本来专门测试邮件发送功能。
 
-```python
-import smtplib
-from email.mime.text import MIMEText
-
-# --- 请修改以下配置 ---
-SENDER_EMAIL = "1958232837@qq.com"       # 你的发件邮箱
-SENDER_AUTH_CODE = "你的授权码"         # 你的邮箱授权码
-RECEIVER_EMAIL = "1958232837@qq.com"     # 收件人邮箱
-# ---------------------
-
-msg = MIMEText("这是一封从服务器发送的测试邮件。", "plain", "utf-8")
-msg["Subject"] = "SMTP 功能测试"
-msg["From"] = SENDER_EMAIL
-msg["To"] = RECEIVER_EMAIL
-
-try:
-    # 连接到 QQ 邮箱的 SMTP 服务器，SSL 加密，端口 465
-    server = smtplib.SMTP_SSL("smtp.qq.com", 465)
-
-    # 启用 Debug 模式，打印出详细的交互信息
-    server.set_debuglevel(1)
-
-    # 登录邮箱
-    server.login(SENDER_EMAIL, SENDER_AUTH_CODE)
-
-    # 发送邮件
-    server.sendmail(SENDER_EMAIL, [RECEIVER_EMAIL], msg.as_string())
-
-    # 关闭连接
-    server.quit()
-    print("✅ 邮件发送成功！")
-
-except Exception as e:
-    print(f"❌ 邮件发送失败，原因: {e}")
-
-```
-
-将以上代码保存为 `test_email.py`，修改配置后运行 `python test_email.py`，根据详细的错误输出来定位问题。
+1.  **修改配置**：打开 `test_email.py` 文件，填入你的发件人邮箱、授权码和收件人邮箱。
+2.  **运行测试**：
+    ```bash
+    python test_email.py
+    ```
+    该脚本会打印出详细的 `SMTP` 交互日志，可以帮助你快速定位是网络问题、登录问题还是发送问题。
